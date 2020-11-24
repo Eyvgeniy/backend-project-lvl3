@@ -1,9 +1,12 @@
 import os from 'os';
 import fs from 'fs/promises';
-import path from 'path';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import nock from 'nock';
-import getFileNameFromUrl from '../src/utils';
-import loadPage from '../src';
+import { getFileNameFromUrl } from '../src/utils';
+import savePage from '../src';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const URL = 'https://ru.hexlet.io/courses';
 const templatePath = path.join(__dirname, '__fixtures__', 'template.html');
@@ -18,12 +21,12 @@ beforeAll(async () => {
 });
 
 test('check formated filename', () => {
-  const result = formatUrl(URL);
+  const result = getFileNameFromUrl(URL);
   expect(result).toBe(filename);
 });
 
 test('load page', async () => {
-  const result = await pageLoad(URL, tmpDir);
+  const result = await savePage(URL, tmpDir);
   const filePath = path.join(tmpDir, filename);
   const fileData = await fs.readFile(filePath, 'utf-8');
   expect(templateData).toBe(fileData);
