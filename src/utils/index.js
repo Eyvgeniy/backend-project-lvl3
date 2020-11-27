@@ -1,9 +1,37 @@
-const ext = 'html';
+import path from 'path';
+
+const extentions = { html: '.html', dir: '_files' };
 const regexp = /[^a-zA-Z0-9]/g;
 
-export const getFileNameFromUrl = (url) => {
-  const pathWithoutProtocol = url.split('//')[1];
+const replaceSymbols = (str) => str.replace(regexp, '-');
+
+export const getNameFromUrl = (url) => {
+  const parsedUrl = new URL(url);
+  const pathWithoutProtocol = `${parsedUrl.host}${parsedUrl.pathname}`;
   const fileName = pathWithoutProtocol.replace(regexp, '-');
-  const file = [fileName, ext].join('.');
-  return file;
+  return fileName;
+};
+
+export const addExt = (name, ext) => {
+  return [name, ext].join('');
+};
+
+export const parseRootName = (url) => {
+  const { host, pathname, origin } = new URL(url);
+  const { dir, name, ext } = path.parse(pathname);
+  const originPath = path.join(host, dir, name);
+  const fileName = replaceSymbols(originPath);
+  return { fileName, ext, origin };
+};
+
+export const parseResourseName = (url) => {
+  const { fileName, ext } = parseRootName(url);
+  const filePath = addExt(fileName, ext);
+  return filePath;
+};
+
+export const addRootExt = (path) => {
+  const htmlName = addExt(path, extentions.html);
+  const dirName = addExt(path, extentions.dir);
+  return { htmlName, dirName };
 };

@@ -1,34 +1,60 @@
 import os from 'os';
-import fs from 'fs/promises';
+import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import nock from 'nock';
-import { getFileNameFromUrl } from '../src/utils';
 import savePage from '../src';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
+const img = 'node.png';
+const html = 'template.html';
+const htmlImg = 'template_img.html';
+const htmlImgSaved = 'template_img_saved.html';
 const URL = 'https://ru.hexlet.io/courses';
-const templatePath = path.join(__dirname, '__fixtures__', 'template.html');
-const filename = 'ru-hexlet-io-courses.html';
+const htmlSaved = 'ru-hexlet-io-courses.html';
+const htmlDir = 'ru-hexlet-io-courses_files';
+const imgSaved = 'ru-hexlet-io-assets-professions-nodejs.png';
 let tmpDir;
-let templateData;
+const getFixturePath = (filename) => path.join(__dirname, '__fixtures__', filename);
+const getTmpPath = (filename) => path.join(tmpDir, filename);
+const readFile = (filename) => fs.readFileSync(getFixturePath(filename));
+const readTmpFile = (filename) => fs.readFileSync(getTmpPath(filename));
 
-beforeAll(async () => {
-  templateData = await fs.readFile(templatePath, 'utf-8');
-  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
-  nock('https://ru.hexlet.io/').get('/courses').reply(200, templateData);
-});
+const imgData = readFile(img);
+const htmlData = readFile(html);
+const htmlImgData = readFile(htmlImg);
+const htmlImgSavedData = readFile(htmlImgSaved);
 
-test('check formated filename', () => {
-  const result = getFileNameFromUrl(URL);
-  expect(result).toBe(filename);
+// test('check formated filename', () => {
+//   const result = getFileNameFromUrl(URL);
+//   expect(result).toBe(expectedFilename);
+// });
+
+beforeEach(() => {
+  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'page-loader-'));
 });
 
 test('load page', async () => {
+  nock('https://ru.hexlet.io/').get('/courses').reply(200, htmlData);
   const result = await savePage(URL, tmpDir);
-  const filePath = path.join(tmpDir, filename);
-  const fileData = await fs.readFile(filePath, 'utf-8');
-  expect(templateData).toBe(fileData);
-  expect(result).toBe(filePath);
+  const htmlSavedData = readTmpFile(htmlSaved);
+  expect(htmlSavedData).toStrictEqual(htmlData);
+});
+
+test('load page with img', async () => {
+  nock('https://ru.hexlet.io/')
+    .get('/courses')
+    .reply(200, htmlImgData)
+    .get('/assets/professions/nodejs.png')
+    .reply(200, imgData, {
+      'Content-Type': 'image/png',
+    });
+  const resultPath = await savePage(URL, tmpDir);
+  const htmlSavedData = readTmpFile(htmlSaved);
+  expect(htmlSavedData).toStrictEqual(htmlImgSavedData);
+  const htmlDirPath = getTmpPath(htmlDir);
+  fs.accessSync(htmlDirPath);
+  const imgSavedPath = path.join(htmlDirPath, imgSaved);
+  const imgSavedData = fs.readFileSync(imgSavedPath);
+  expect(imgSavedData).toStrictEqual(imgData);
 });
