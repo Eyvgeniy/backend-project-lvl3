@@ -3,11 +3,8 @@ import path from 'path';
 
 export const getPath = (dir, filename) => path.join(dir, filename);
 export const mkdir = (path) =>
-  fs.mkdir(path).catch((err) => {
-    throw new Error('Can`t make dir', err.message);
+  fs.mkdir(path, { recursive: true }).catch((err) => {
+    throw new Error(err);
   });
 
-export const writeFile = (path, data) =>
-  fs.writeFile(path, data).catch((err) => {
-    throw new Error('Can`t write file', err.message);
-  });
+export const writeFile = (path, data) => fs.writeFile(path, data);

@@ -1,2 +1,2 @@
-__tests__/page-loader.js
-jest.config.js
+node_modules
+__fixtures__

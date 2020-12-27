@@ -2,24 +2,43 @@ import cheerio from 'cheerio';
 import path from 'path';
 import { parseResourseName } from './utils';
 
-const resourses = ['img'];
+const resoursesObj = {
+  img: 'src',
+  link: 'href',
+  script: 'src',
+};
 
-export default (html, dirName, origin) => {
-  const links = [];
+export default (data, dirName, url) => {
+  const $ = cheerio.load(data, { decodeEntities: false });
+  const originUrl = new URL(url);
 
-  const $ = cheerio.load(html, { decodeEntities: false });
-  resourses.map((el) => {
-    const elements = $('body').find(el);
-    if (!elements.is('img')) return;
-    elements.each((i, el) => {
-      const link = $(el).attr('src');
-      const fullLink = new URL(link, origin);
-      links.push(fullLink.href);
-      const filePath = parseResourseName(fullLink);
-      const fullPath = path.join(dirName, filePath);
-      $(el).attr('src', fullPath);
-    });
+  const normalize = (link) => {
+    const normalizeLink = new URL(link, url);
+    return { link, normalizeLink };
+  };
+
+  const allLinks = Object.entries(resoursesObj).flatMap(([tag, attr]) => {
+    return $(tag)
+      .map(function (i, el) {
+        return $(el).attr(attr);
+      })
+      .get();
   });
-  if (links.length === 0) return { html, links };
-  return { links, html: $.html() };
+
+  const filteredLinks = allLinks
+    .map(normalize)
+    .filter(({ normalizeLink }) => normalizeLink.origin === originUrl.origin);
+
+  const hash = filteredLinks.map((link) => {
+    const filePath = parseResourseName(link.normalizeLink);
+    link.path = path.join(dirName, filePath);
+    return link;
+  });
+  const links = filteredLinks
+    .map(({ normalizeLink }) => normalizeLink.href)
+    .filter((link) => link !== url);
+
+  const html = hash.reduce((acc, el) => acc.replace(el.link, el.path), data);
+
+  return { links, html };
 };
