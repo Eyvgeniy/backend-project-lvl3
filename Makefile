@@ -1,5 +1,5 @@
 test:
-		npm run test
+		DEBUG=page-loader npm run test
 
 lint:
 		npm run lint

@@ -17,13 +17,9 @@ export default (data, dirName, url) => {
     return { link, normalizeLink };
   };
 
-  const allLinks = Object.entries(resoursesObj).flatMap(([tag, attr]) => {
-    return $(tag)
-      .map(function (i, el) {
-        return $(el).attr(attr);
-      })
-      .get();
-  });
+  const allLinks = Object.entries(resoursesObj).flatMap(([tag, attr]) => $(tag)
+    .map((i, el) => $(el).attr(attr))
+    .get());
 
   const filteredLinks = allLinks
     .map(normalize)
@@ -31,8 +27,7 @@ export default (data, dirName, url) => {
 
   const hash = filteredLinks.map((link) => {
     const filePath = parseResourseName(link.normalizeLink);
-    link.path = path.join(dirName, filePath);
-    return link;
+    return { ...link, path: path.join(dirName, filePath) };
   });
   const links = filteredLinks
     .map(({ normalizeLink }) => normalizeLink.href)

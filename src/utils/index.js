@@ -12,9 +12,7 @@ export const getNameFromUrl = (url) => {
   return fileName;
 };
 
-export const addExt = (name, ext) => {
-  return [name, ext].join('');
-};
+export const addExt = (name, ext) => [name, ext].join('');
 
 export const parseRootName = (url) => {
   const { host, pathname, origin } = new URL(url);
@@ -30,8 +28,8 @@ export const parseResourseName = (url) => {
   return filePath;
 };
 
-export const addRootExt = (path) => {
-  const htmlName = addExt(path, extentions.html);
-  const dirName = addExt(path, extentions.dir);
+export const addRootExt = (pathToDir) => {
+  const htmlName = addExt(pathToDir, extentions.html);
+  const dirName = addExt(pathToDir, extentions.dir);
   return { htmlName, dirName };
 };
