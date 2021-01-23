@@ -5,13 +5,15 @@ import { fileURLToPath } from 'url';
 import nock from 'nock';
 import savePage from '../src';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const pathToDir = dirname(fileURLToPath(import.meta.url));
 const link = 'https://ru.hexlet.io/';
 const resorsesPaths = ['/assets/application.css', '/assets/nodejs.png', '/assets/runtime.js'];
-const getFixturesFilesPath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const getFixturesFilesPath = (filename) => path.join(pathToDir, '..', '__fixtures__', filename);
 const htmlTemplateName = 'template.html';
 const htmlTemplateSavedName = 'template_saved.html';
-let tmpDir, templateData, templateSavedData;
+let tmpDir;
+let templateData;
+let templateSavedData;
 nock.disableNetConnect();
 const scope = nock(link);
 
@@ -26,9 +28,9 @@ beforeEach(async () => {
 });
 
 test('load page with resourses', async () => {
-  resorsesPaths.forEach(async (path) => {
-    const resourseData = await fs.readFile(getFixturesFilesPath(path));
-    scope.get(path).reply(200, resourseData);
+  resorsesPaths.forEach(async (resoursePath) => {
+    const resourseData = await fs.readFile(getFixturesFilesPath(resoursePath));
+    scope.get(resoursePath).reply(200, resourseData);
   });
 
   const { html } = await savePage(tmpDir, `${link}courses`);

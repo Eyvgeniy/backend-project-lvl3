@@ -1,14 +1,23 @@
 import axios from 'axios';
+import 'axios-debug-log';
+import debug from 'debug';
 import { parseRootName, addRootExt, parseResourseName } from './utils/index.js';
 import replaceLinks from './parseHtml';
 import * as fs from './utils/fs';
+
+const log = debug('page-loader');
 
 const savePage = (dir = process.cwd(), url) => {
   const { fileName, origin } = parseRootName(url);
   const { htmlName, dirName } = addRootExt(fileName);
   const htmlPath = fs.getPath(dir, htmlName);
   const dirPath = fs.getPath(dir, dirName);
-  let allLinks, savedHtml, resoursePath;
+  let allLinks; let savedHtml; let
+    resoursePath;
+  log(`dirname: ${dirName}`);
+  log(`dirpath: ${dirPath}`);
+  log(`filename: ${fileName}`);
+  log(`filepath: ${htmlPath}`);
 
   const buildPromise = (link) => {
     let responseData;
@@ -29,6 +38,7 @@ const savePage = (dir = process.cwd(), url) => {
       const { links, html } = replaceLinks(data, dirName, url);
       allLinks = links;
       savedHtml = html;
+      log(`Remote resourses:\n${allLinks.join('\n')}`);
       return fs.writeFile(htmlPath, html);
     })
     .then(() => {
