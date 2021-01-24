@@ -1,10 +1,29 @@
 #!/usr/bin/env node
+import program from 'commander';
+import load from '../src/index.js';
 
-import pageLoader from '../src/index.js';
-
-const url = process.argv[process.argv.length - 1];
-const filePath = async () => {
-  const filePath = await pageLoader(url);
-  console.log(filePath);
+const handleError = (e) => {
+  if (e.response) {
+    const { url } = e.config;
+    return `${e.response.statusText}: ${url}. ${e.message}.`;
+  }
+  return e.message;
 };
-filePath();
+
+program
+  .description('Download pages on local machine.')
+  .version('1.0.0')
+  .arguments('<url>')
+  .option('-O, --output [path]', 'Output directory to load content')
+  .action((url) => {
+    load(program.output, url)
+      .then(({ path }) => {
+        console.log(`All resources from ${url} were successfully downloaded.`);
+        console.log(`You can open ${path}`);
+      })
+      .catch((err) => {
+        console.error(handleError(err));
+        process.exit(1);
+      });
+  });
+program.parse(process.argv);
