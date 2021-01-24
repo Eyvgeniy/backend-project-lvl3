@@ -3,13 +3,13 @@ import 'axios-debug-log';
 import debug from 'debug';
 import Listr from 'listr';
 import { parseRootName, addRootExt, parseResourseName } from './utils/index.js';
-import replaceLinks from './parseHtml';
-import * as fs from './utils/fs';
+import replaceLinks from './parseHtml.js';
+import * as fs from './utils/fs.js';
 
 const log = debug('page-loader');
 
-const savePage = (dir = process.cwd(), url) => {
-  const { fileName, origin } = parseRootName(url);
+const savePage = (dir, url) => {
+  const { fileName } = parseRootName(url);
   const { htmlName, dirName } = addRootExt(fileName);
   const htmlPath = fs.getPath(dir, htmlName);
   const dirPath = fs.getPath(dir, dirName);
@@ -45,10 +45,12 @@ const savePage = (dir = process.cwd(), url) => {
       return fs.writeFile(htmlPath, html);
     })
     .then(() => {
-      const promiseLinks = allLinks.map(buildPromise);
-      return Promise.all(promiseLinks);
+      const promiseLinks = new Listr(
+        allLinks.map((link) => ({ title: link, task: () => buildPromise(link) })),
+      );
+      return promiseLinks.run();
     })
-    .then(() => ({ path: resoursePath, html: savedHtml }));
+    .then(() => ({ path: dirPath, html: savedHtml }));
 };
 
 export default savePage;

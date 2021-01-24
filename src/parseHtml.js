@@ -1,6 +1,6 @@
 import cheerio from 'cheerio';
 import path from 'path';
-import { parseResourseName } from './utils';
+import { parseResourseName } from './utils/index.js';
 
 const resoursesObj = {
   img: 'src',
