@@ -4,6 +4,7 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import nock from 'nock';
 import savePage from '../src';
+import { ENOENT } from 'constants';
 
 const pathToDir = dirname(fileURLToPath(import.meta.url));
 const link = 'https://ru.hexlet.io/';
@@ -28,6 +29,8 @@ beforeEach(async () => {
 });
 
 test('load page with resourses', async () => {
+  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
+  scope.get('/courses').reply(200, templateData);
   resorsesPaths.forEach(async (resoursePath) => {
     const resourseData = await fs.readFile(getFixturesFilesPath(resoursePath));
     scope.get(resoursePath).reply(200, resourseData);
@@ -35,4 +38,14 @@ test('load page with resourses', async () => {
 
   const { html } = await savePage(tmpDir, `${link}courses`);
   expect(html).toBe(templateSavedData);
+});
+
+test('Page-loader must fail and show 404 error', async () => {
+  scope.get('/wrong').reply(404, []);
+
+  await expect(savePage(tmpDir, `${link}wrong`)).rejects.toThrow('404');
+});
+
+test('Page-loader must fail and show ENOENT error', async () => {
+  await expect(savePage('/wrong/dir', `${link}courses`)).rejects.toThrow('ENOENT');
 });

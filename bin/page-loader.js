@@ -4,7 +4,11 @@ import pageLoader from '../src/index.js';
 
 const url = process.argv[process.argv.length - 1];
 const savePage = async () => {
-  const filePath = await pageLoader(url);
-  console.log(filePath);
+  pageLoader(url)
+    .then((data) => console.log(data))
+    .catch((err) => {
+      console.error(err);
+      process.exit(1);
+    });
 };
 savePage();
