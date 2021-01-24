@@ -36,5 +36,5 @@ export default (data, dirName, url) => {
 
   const html = hash.reduce((acc, el) => acc.replace(el.link, el.path), data);
 
-  return { links, html: lintedHtml };
+  return { links, html };
 };
