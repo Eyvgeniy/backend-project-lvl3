@@ -1,5 +1,5 @@
 test:
-		DEBUG=axios npm run test
+		DEBUG=axios npm run test -s
 
 lint:
 		npm run lint
