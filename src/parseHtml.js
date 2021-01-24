@@ -10,7 +10,6 @@ const resoursesObj = {
 };
 
 export default (data, dirName, url) => {
-
   const $ = cheerio.load(data, { decodeEntities: false });
   const originUrl = new URL(url);
 
@@ -19,9 +18,11 @@ export default (data, dirName, url) => {
     return { link, normalizeLink };
   };
 
-  const allLinks = Object.entries(resoursesObj).flatMap(([tag, attr]) => $(tag)
-    .map((i, el) => $(el).attr(attr))
-    .get());
+  const allLinks = Object.entries(resoursesObj).flatMap(([tag, attr]) =>
+    $(tag)
+      .map((i, el) => $(el).attr(attr))
+      .get(),
+  );
 
   const filteredLinks = allLinks
     .map(normalize)
@@ -35,10 +36,10 @@ export default (data, dirName, url) => {
     .map(({ normalizeLink }) => normalizeLink.href)
     .filter((link) => link !== url);
 
-  const html = hash.reduce((acc, el) => acc.replace(el.link, el.path), data);
+  const html = hash.reduce((acc, el) => acc.replace(el.link, el.path.trim()), data);
 
-  const lintedHtml = prettier.format(html, { parser: 'html'});
-  console.log(lintedHtml)
+  const lintedHtml = prettier.format(html, { parser: 'html' });
+  console.log(lintedHtml);
 
   return { links, html };
 };
