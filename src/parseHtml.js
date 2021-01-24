@@ -9,6 +9,8 @@ const resoursesObj = {
 };
 
 export default (data, dirName, url) => {
+  console.log(data);
+
   const $ = cheerio.load(data, { decodeEntities: false });
   const originUrl = new URL(url);
 
