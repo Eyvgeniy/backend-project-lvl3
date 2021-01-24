@@ -46,7 +46,7 @@ const savePage = (dir, url) => {
     })
     .then(() => {
       const promiseLinks = new Listr(
-        allLinks.map((link) => ({ title: link, task: () => buildPromise(link) })),
+        allLinks.map((link) => ({ title: link, task: () => buildPromise(link) })), {concurrent: true}
       );
       return promiseLinks.run();
     })
