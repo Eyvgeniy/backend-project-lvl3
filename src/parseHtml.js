@@ -1,4 +1,5 @@
 import cheerio from 'cheerio';
+import prettier from 'prettier';
 import path from 'path';
 import { parseResourseName } from './utils/index.js';
 
@@ -35,6 +36,9 @@ export default (data, dirName, url) => {
     .filter((link) => link !== url);
 
   const html = hash.reduce((acc, el) => acc.replace(el.link, el.path), data);
+
+  const lintedHtml = prettier.format(html, { parser: 'html'});
+  console.log(lintedHtml)
 
   return { links, html };
 };

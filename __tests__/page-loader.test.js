@@ -7,7 +7,7 @@ import savePage from '../src';
 
 const pathToDir = dirname(fileURLToPath(import.meta.url));
 const link = 'https://ru.hexlet.io/';
-const resorsesPaths = ['/assets/application.css', '/assets/nodejs.png', '/assets/runtime.js'];
+const resorsesPaths = ['/assets/application.css', '/assets/nodejs.png', '/assets/runtime.js', '/assets/page.html'];
 const getFixturesFilesPath = (filename) => path.join(pathToDir, '..', '__fixtures__', filename);
 const htmlTemplateName = 'template.html';
 const htmlTemplateSavedName = 'template_saved.html';
