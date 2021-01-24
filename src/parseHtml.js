@@ -34,7 +34,9 @@ export default (data, dirName, url) => {
   });
   const links = filteredLinks.map(({ normalizeLink }) => normalizeLink.href);
 
-  const html = hash.reduce((acc, el) => acc.replace(el.link, el.path.trim()), data);
+  const html = hash
+    .reduce((acc, el) => acc.replace(el.link, el.path.trim()), data)
+    .replaceAll(' />', '>');
 
   const lintedHtml = prettier.format(html, { parser: 'html' });
   console.log(lintedHtml);
