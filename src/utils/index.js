@@ -12,7 +12,13 @@ export const getNameFromUrl = (url) => {
   return fileName;
 };
 
-export const addExt = (name, ext) => [name, ext].join('');
+export const addExt = (name, ext) => {
+  if (!ext) {
+    ext = '.html';
+  }
+
+  return [name, ext].join('');
+};
 
 export const parseRootName = (url) => {
   const { host, pathname, origin } = new URL(url);

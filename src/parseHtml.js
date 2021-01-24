@@ -32,9 +32,7 @@ export default (data, dirName, url) => {
     const filePath = parseResourseName(link.normalizeLink);
     return { ...link, path: path.join(dirName, filePath) };
   });
-  const links = filteredLinks
-    .map(({ normalizeLink }) => normalizeLink.href)
-    .filter((link) => link !== url);
+  const links = filteredLinks.map(({ normalizeLink }) => normalizeLink.href);
 
   const html = hash.reduce((acc, el) => acc.replace(el.link, el.path.trim()), data);
 
