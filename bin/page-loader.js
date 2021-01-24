@@ -14,7 +14,7 @@ program
   .description('Download pages on local machine.')
   .version('1.0.0')
   .arguments('<url>')
-  .option('-O, --output [path]', 'Output directory to load content')
+  .option('-o, --output [path]', 'Output directory to load content')
   .action((url) => {
     load(program.output, url)
       .then(({ path }) => {
