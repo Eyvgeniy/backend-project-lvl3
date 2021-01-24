@@ -1,6 +1,7 @@
 import axios from 'axios';
 import 'axios-debug-log';
 import debug from 'debug';
+import Listr from 'listr';
 import { parseRootName, addRootExt, parseResourseName } from './utils/index.js';
 import replaceLinks from './parseHtml';
 import * as fs from './utils/fs';
@@ -12,8 +13,9 @@ const savePage = (dir = process.cwd(), url) => {
   const { htmlName, dirName } = addRootExt(fileName);
   const htmlPath = fs.getPath(dir, htmlName);
   const dirPath = fs.getPath(dir, dirName);
-  let allLinks; let savedHtml; let
-    resoursePath;
+  let allLinks;
+  let savedHtml;
+  let resoursePath;
   log(`dirname: ${dirName}`);
   log(`dirpath: ${dirPath}`);
   log(`filename: ${fileName}`);
@@ -32,8 +34,9 @@ const savePage = (dir = process.cwd(), url) => {
       .then(() => fs.writeFile(resoursePath, responseData));
   };
 
-  return axios
-    .get(url)
+  return fs
+    .access(dir)
+    .then(() => axios.get(url))
     .then(({ data }) => {
       const { links, html } = replaceLinks(data, dirName, url);
       allLinks = links;
