@@ -38,6 +38,7 @@ const savePage = (dir, url) => {
     .access(dir)
     .then(() => axios.get(url))
     .then(({ data }) => {
+      console.log(data);
       const { links, html } = replaceLinks(data, dirName, url);
       allLinks = links;
       savedHtml = html;
