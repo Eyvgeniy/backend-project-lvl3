@@ -4,7 +4,6 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import nock from 'nock';
 import savePage from '../src';
-import { ENOENT } from 'constants';
 
 const pathToDir = dirname(fileURLToPath(import.meta.url));
 const link = 'https://ru.hexlet.io/';
