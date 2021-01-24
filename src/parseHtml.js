@@ -1,7 +1,6 @@
 import cheerio from 'cheerio';
 import path from 'path';
 import { parseResourseName } from './utils/index.js';
-import prettier from 'prettier'
 
 const resoursesObj = {
   img: 'src',
@@ -36,8 +35,6 @@ export default (data, dirName, url) => {
     .filter((link) => link !== url);
 
   const html = hash.reduce((acc, el) => acc.replace(el.link, el.path), data);
-
-  const lintedHtml = prettier.format(html, { parser: 'html' });
 
   return { links, html: lintedHtml };
 };
