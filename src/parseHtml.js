@@ -36,7 +36,8 @@ export default (data, dirName, url) => {
 
   const html = hash
     .reduce((acc, el) => acc.replace(el.link, el.path.trim()), data)
-    .replaceAll(' />', '>');
+    .split(' />')
+    .join('>');
 
   return { links, html };
 };
