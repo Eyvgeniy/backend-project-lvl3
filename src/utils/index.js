@@ -14,7 +14,7 @@ export const getNameFromUrl = (url) => {
 
 export const addExt = (name, ext) => {
   if (!ext) {
-    ext = '.html';
+    return [name, '.html'].join('');
   }
 
   return [name, ext].join('');

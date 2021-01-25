@@ -35,16 +35,16 @@ test('load page with resourses', async () => {
     scope.get(resoursePath).reply(200, resourseData);
   });
 
-  const { html } = await savePage(tmpDir, `${link}courses`);
+  const { html } = await savePage(`${link}courses`, tmpDir);
   expect(html).toBe(templateSavedData);
 });
 
 test('Page-loader must fail and show 404 error', async () => {
   scope.get('/wrong').reply(404, []);
 
-  await expect(savePage(tmpDir, `${link}wrong`)).rejects.toThrow('404');
+  await expect(savePage(`${link}wrong`, tmpDir)).rejects.toThrow('404');
 });
 
 test('Page-loader must fail and show ENOENT error', async () => {
-  await expect(savePage('/wrong/dir', `${link}courses`)).rejects.toThrow('ENOENT');
+  await expect(savePage(`${link}courses`, '/wrong/dir')).rejects.toThrow('ENOENT');
 });

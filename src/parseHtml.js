@@ -1,5 +1,4 @@
 import cheerio from 'cheerio';
-import prettier from 'prettier';
 import path from 'path';
 import { parseResourseName } from './utils/index.js';
 
@@ -9,10 +8,10 @@ const resoursesObj = {
   script: 'src',
 };
 
-const beginOfHtmltExpected = "<!DOCTYPE html><html lang=\"ru\"><head>";
-const beginOfHtmltTemplate = "<!DOCTYPE html>\n<html lang=\"ru\">\n    <head>";
-const endOfHtmlExpected = "    \n\n</body></html>";
-const endOfHtmlTemplate = "    </body>\n</html>\n";
+const beginOfHtmltExpected = '<!DOCTYPE html><html lang="ru"><head>';
+const beginOfHtmltTemplate = '<!DOCTYPE html>\n<html lang="ru">\n    <head>';
+const endOfHtmlExpected = '    \n\n</body></html>';
+const endOfHtmlTemplate = '    </body>\n</html>\n';
 
 export default (data, dirName, url) => {
   const $ = cheerio.load(data, { decodeEntities: false });
@@ -23,11 +22,9 @@ export default (data, dirName, url) => {
     return { link, normalizeLink };
   };
 
-  const allLinks = Object.entries(resoursesObj).flatMap(([tag, attr]) =>
-    $(tag)
-      .map((i, el) => $(el).attr(attr))
-      .get(),
-  );
+  const allLinks = Object.entries(resoursesObj).flatMap(([tag, attr]) => $(tag)
+    .map((i, el) => $(el).attr(attr))
+    .get());
 
   const filteredLinks = allLinks
     .map(normalize)
