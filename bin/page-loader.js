@@ -16,7 +16,7 @@ program
   .arguments('<url>')
   .option('-o, --output [path]', 'Output directory to load content')
   .action((url) => {
-    load(program.output, url)
+    load(url, program.output)
       .then(({ path }) => {
         console.log(`All resources from ${url} were successfully downloaded.`);
         console.log(`You can open ${path}`);
