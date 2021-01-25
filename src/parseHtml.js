@@ -9,6 +9,11 @@ const resoursesObj = {
   script: 'src',
 };
 
+const beginOfHtmltExpected = "<!DOCTYPE html><html lang=\"ru\"><head>\n\n";
+const beginOfHtmltTemplate = "<!DOCTYPE html>\n<html lang=\"ru\">\n    <head>";
+const endOfHtmlExpected = "\n\n</body></html>";
+const endOfHtmlTemplate = "    </body>\n  </html>\n";
+
 export default (data, dirName, url) => {
   const $ = cheerio.load(data, { decodeEntities: false });
   const originUrl = new URL(url);
@@ -37,7 +42,9 @@ export default (data, dirName, url) => {
   const html = hash
     .reduce((acc, el) => acc.replace(el.link, el.path.trim()), data)
     .split(' />')
-    .join('>');
+    .join('>')
+    .replace(beginOfHtmltTemplate, beginOfHtmltExpected)
+    .replace(endOfHtmlTemplate, endOfHtmlExpected);
 
   return { links, html };
 };
