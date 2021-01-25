@@ -9,10 +9,10 @@ const resoursesObj = {
   script: 'src',
 };
 
-const beginOfHtmltExpected = "<!DOCTYPE html><html lang=\"ru\"><head>\n\n";
+const beginOfHtmltExpected = "<!DOCTYPE html><html lang=\"ru\"><head>";
 const beginOfHtmltTemplate = "<!DOCTYPE html>\n<html lang=\"ru\">\n    <head>";
 const endOfHtmlExpected = "\n\n</body></html>";
-const endOfHtmlTemplate = "    </body>\n  </html>\n";
+const endOfHtmlTemplate = "    </body>\n</html>\n";
 
 export default (data, dirName, url) => {
   const $ = cheerio.load(data, { decodeEntities: false });
