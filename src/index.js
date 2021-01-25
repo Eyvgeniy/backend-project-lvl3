@@ -8,7 +8,7 @@ import * as fs from './utils/fs.js';
 
 const log = debug('page-loader');
 
-const savePage = (dir, url) => {
+const savePage = (url, dir) => {
   const { fileName } = parseRootName(url);
   const { htmlName, dirName } = addRootExt(fileName);
   const htmlPath = fs.getPath(dir, htmlName);
@@ -38,7 +38,6 @@ const savePage = (dir, url) => {
     .access(dir)
     .then(() => axios.get(url))
     .then(({ data }) => {
-      console.log(data);
       const { links, html } = replaceLinks(data, dirName, url);
       allLinks = links;
       savedHtml = html;
