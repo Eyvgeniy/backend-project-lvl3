@@ -28,12 +28,14 @@ export default (data, dirName, url) => {
 
   const filteredLinks = allLinks
     .map(normalize)
-    .filter(({ normalizeLink }) => normalizeLink.origin === originUrl.origin);
+    .filter(({ normalizeLink }) => normalizeLink.origin === originUrl.origin)
+    .filter(({ normalizeLink }) => normalizeLink.pathname !== '/');
 
   const hash = filteredLinks.map((link) => {
     const filePath = parseResourseName(link.normalizeLink);
     return { ...link, path: path.join(dirName, filePath) };
   });
+  
   const links = filteredLinks.map(({ normalizeLink }) => normalizeLink.href);
 
   const html = hash

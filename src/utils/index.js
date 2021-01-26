@@ -5,13 +5,6 @@ const regexp = /[^a-zA-Z0-9]/g;
 
 const replaceSymbols = (str) => str.replace(regexp, '-');
 
-export const getNameFromUrl = (url) => {
-  const parsedUrl = new URL(url);
-  const pathWithoutProtocol = `${parsedUrl.host}${parsedUrl.pathname}`;
-  const fileName = pathWithoutProtocol.replace(regexp, '-');
-  return fileName;
-};
-
 export const addExt = (name, ext) => {
   if (!ext) {
     return [name, '.html'].join('');
@@ -23,7 +16,10 @@ export const addExt = (name, ext) => {
 export const parseRootName = (url) => {
   const { host, pathname, origin } = new URL(url);
   const { dir, name, ext } = path.parse(pathname);
-  const originPath = path.join(host, dir, name);
+  let originPath = path.join(host, dir, name);
+  if (originPath[originPath.length - 1] === '/' ) {
+    originPath = originPath.slice(0, -1);
+  }
   const fileName = replaceSymbols(originPath);
   return { fileName, ext, origin };
 };

@@ -28,7 +28,6 @@ beforeEach(async () => {
 });
 
 test('load page with resourses', async () => {
-  tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
   scope.get('/courses').reply(200, templateData);
   resorsesPaths.forEach(async (resoursePath) => {
     const resourseData = await fs.readFile(getFixturesFilesPath(resoursePath));
@@ -39,12 +38,12 @@ test('load page with resourses', async () => {
   expect(html).toBe(templateSavedData);
 });
 
-test('Page-loader must fail and show 404 error', async () => {
-  scope.get('/wrong').reply(404, []);
+// test('Page-loader must fail and show 404 error', async () => {
+//   scope.get('/wrong').reply(404, []);
 
-  await expect(savePage(`${link}wrong`, tmpDir)).rejects.toThrow('404');
-});
+//   await expect(savePage(`${link}wrong`, tmpDir)).rejects.toThrow('404');
+// });
 
-test('Page-loader must fail and show ENOENT error', async () => {
-  await expect(savePage(`${link}courses`, '/wrong/dir')).rejects.toThrow('ENOENT');
-});
+// test('Page-loader must fail and show ENOENT error', async () => {
+//   await expect(savePage(`${link}courses`, '/wrong/dir')).rejects.toThrow('ENOENT');
+// });

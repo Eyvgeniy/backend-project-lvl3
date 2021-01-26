@@ -1,37 +1,36 @@
+import fs from 'fs/promises';
+import path from 'path'
 import axios from 'axios';
 import 'axios-debug-log';
 import debug from 'debug';
 import Listr from 'listr';
 import { parseRootName, addRootExt, parseResourseName } from './utils/index.js';
 import replaceLinks from './parseHtml.js';
-import * as fs from './utils/fs.js';
 
 const log = debug('page-loader');
+
+const getPath = (dir, filename) => path.join(dir, filename);
 
 const savePage = (url, dir) => {
   const { fileName } = parseRootName(url);
   const { htmlName, dirName } = addRootExt(fileName);
-  const htmlPath = fs.getPath(dir, htmlName);
-  const dirPath = fs.getPath(dir, dirName);
+  const htmlPath = getPath(dir, htmlName);
+  const dirPath = getPath(dir, dirName);
   let allLinks;
   let savedHtml;
-  let resoursePath;
   log(`dirname: ${dirName}`);
   log(`dirpath: ${dirPath}`);
   log(`filename: ${fileName}`);
   log(`filepath: ${htmlPath}`);
 
   const buildPromise = (link) => {
-    let responseData;
     const resourseName = parseResourseName(link);
-    resoursePath = fs.getPath(dirPath, resourseName);
+    const resoursePath = getPath(dirPath, resourseName);
     return axios
       .get(link, { responseType: 'arraybuffer' })
       .then(({ data }) => {
-        responseData = data;
-        return fs.mkdir(dirPath);
+        return fs.writeFile(resoursePath, data);
       })
-      .then(() => fs.writeFile(resoursePath, responseData));
   };
 
   return fs
@@ -44,11 +43,11 @@ const savePage = (url, dir) => {
       log(`Remote resourses:\n${allLinks.join('\n')}`);
       return fs.writeFile(htmlPath, html);
     })
+    .then(() => fs.mkdir(dirPath))
     .then(() => {
-      const promiseLinks = new Listr(
-        allLinks.map((link) => ({ title: link, task: () => buildPromise(link) })),
-      );
-      return promiseLinks.run();
+      const promiseLinks = allLinks
+        .map((link) => ({title: link, task: () => buildPromise(link)}));
+      return new Listr(promiseLinks, { concurrent: true, exitOnError: false }).run();
     })
     .then(() => ({ path: dirPath, html: savedHtml }));
 };
