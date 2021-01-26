@@ -44,7 +44,7 @@ const savePage = (url, dir) => {
     .then(() => fs.mkdir(dirPath))
     .then(() => {
       const promiseLinks = allLinks
-        .map((link) => ({ title: link, task: () => buildPromise(link)} ));
+        .map((link) => ({ title: link, task: () => buildPromise(link) }));
       return new Listr(promiseLinks, { concurrent: true, exitOnError: false }).run();
     })
     .then(() => ({ path: dirPath, html: savedHtml }));
