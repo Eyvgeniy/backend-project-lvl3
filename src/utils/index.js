@@ -17,7 +17,7 @@ export const parseRootName = (url) => {
   const { host, pathname, origin } = new URL(url);
   const { dir, name, ext } = path.parse(pathname);
   let originPath = path.join(host, dir, name);
-  if (originPath[originPath.length - 1] === '/' ) {
+  if (originPath[originPath.length - 1] === '/') {
     originPath = originPath.slice(0, -1);
   }
   const fileName = replaceSymbols(originPath);

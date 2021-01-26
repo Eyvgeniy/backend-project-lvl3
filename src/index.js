@@ -1,5 +1,5 @@
 import fs from 'fs/promises';
-import path from 'path'
+import path from 'path';
 import axios from 'axios';
 import 'axios-debug-log';
 import debug from 'debug';
@@ -28,9 +28,7 @@ const savePage = (url, dir) => {
     const resoursePath = getPath(dirPath, resourseName);
     return axios
       .get(link, { responseType: 'arraybuffer' })
-      .then(({ data }) => {
-        return fs.writeFile(resoursePath, data);
-      })
+      .then(({ data }) => fs.writeFile(resoursePath, data));
   };
 
   return fs
@@ -46,7 +44,7 @@ const savePage = (url, dir) => {
     .then(() => fs.mkdir(dirPath))
     .then(() => {
       const promiseLinks = allLinks
-        .map((link) => ({title: link, task: () => buildPromise(link)}));
+        .map((link) => ({ title: link, task: () => buildPromise(link)} ));
       return new Listr(promiseLinks, { concurrent: true, exitOnError: false }).run();
     })
     .then(() => ({ path: dirPath, html: savedHtml }));
